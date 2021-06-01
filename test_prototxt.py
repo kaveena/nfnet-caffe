@@ -51,7 +51,7 @@ def load_block(net, haiku_params, block_number):
 
 caffe.set_mode_gpu()
 
-net = caffe.Net("./nfnets/nfnet-F0.prototxt", caffe.TEST)
+net = caffe.Net("./nfnet-F0.prototxt", caffe.TEST)
 
 #net.forward()
 #net.backward()
