@@ -59,6 +59,14 @@ layer {
   scale_param: {
     bias_term: true
   }
+  param: {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param: {
+    lr_mult: 0
+    decay_mult: 0
+  }
 }
 
 layer {
