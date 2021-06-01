@@ -1,55 +1,63 @@
 name: "NFNET-F0"
 
+layer {
+  name: "data"
+  type: "ImageData"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    crop_size: 256
+    mirror: true
+  }
+  image_data_param {
+    source: "/home/kaveena/compare-pruning-signals/caffe-training-data/IMAGENET2012/train-index.txt"
+    batch_size: 1
+    shuffle: true
+  }
+}
+
+layer {
+  name: "data"
+  type: "ImageData"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    crop_size: 256
+  }
+  image_data_param {
+    source: "/home/kaveena/compare-pruning-signals/caffe-training-data/IMAGENET2012/test-index.txt"
+    batch_size: 1
+    shuffle: true
+  }
+}
+
 #layer {
 #  name: "data"
-#  type: "ImageData"
+#  type: "Input"
 #  top: "data"
-#  top: "label"
-#  include {
-#    phase: TRAIN
-#  }
-#  transform_param {
-#    crop_size: 256
-#    mirror: true
-#  }
-#  image_data_param {
-#    source: "/home/kaveena/compare-pruning-signals/caffe-training-data/IMAGENET2012/train-index.txt"
-#    batch_size: 32
-#    shuffle: true
-#  }
-#}
-#
-#layer {
-#  name: "data"
-#  type: "ImageData"
-#  top: "data"
-#  top: "label"
-#  include {
-#    phase: TEST
-#  }
-#  transform_param {
-#    mirror: true
-#  }
-#  image_data_param {
-#    source: "/home/kaveena/compare-pruning-signals/caffe-training-data/IMAGENET2012/test-index.txt"
-#    batch_size: 32
-#    shuffle: true
-#    new_height: 256
-#    new_width: 256
+#  input_param: {
+#    shape: {
+#      dim: 1
+#      dim: 3
+#      dim: 256
+#      dim: 256
+#    }
 #  }
 #}
 
 layer {
-  name: "data"
-  type: "Input"
+  bottom: "data"
   top: "data"
-  input_param: {
-    shape: {
-      dim: 1
-      dim: 3
-      dim: 256
-      dim: 256
-    }
+  name: "scale_data"
+  type: "Scale"
+  scale_param: {
+    bias_term: true
   }
 }
 
@@ -2222,3 +2230,29 @@ layer {
   }
 }
 
+layer {
+    bottom: "fc"
+    bottom: "label"
+    name: "loss"
+    type: "SoftmaxWithLoss"
+    top: "loss"
+}
+
+layer {
+    bottom: "fc"
+    bottom: "label"
+    top: "top-1"
+    name: "top-1"
+    type: "Accuracy"
+}
+
+layer {
+    bottom: "fc"
+    bottom: "label"
+    top: "top-5"
+    name: "top-5"
+    type: "Accuracy"
+    accuracy_param {
+        top_k: 5
+    }
+}
