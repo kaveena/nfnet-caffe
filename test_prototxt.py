@@ -58,6 +58,11 @@ net = caffe.Net("./nfnet-F0.prototxt", caffe.TEST)
 
 haiku_params = dict(np.load("./F0_weights.npy", allow_pickle=True).item())
 
+hk_mean = np.array([0.485 * 255, 0.456 * 255, 0.406 * 255])
+hk_std = np.array([0.229 * 255, 0.224 * 255, 0.225 * 255])
+np.copyto(net.params['scale_data'][0].data, 1 / hk_std)
+np.copyto(net.params['scale_data'][1].data, -1 * hk_mean/ hk_std)
+
 stem_conv0_w = wsweights(haiku_params["NFNet.stem_conv0.w"], haiku_params["NFNet.stem_conv0.gain"])
 stem_conv0_w = np.transpose(stem_conv0_w, (3, 2, 0, 1))
 np.copyto(net.params['stem_conv0'][0].data, stem_conv0_w)
